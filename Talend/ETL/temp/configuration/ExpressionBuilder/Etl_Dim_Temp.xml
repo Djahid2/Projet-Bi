@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<expression:EMFExpression xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:expression="http:///expression.ecore" id="tMap_2=>" expression="(row2.Order_Date == null || row2.Order_Date.isEmpty()) &#xD;&#xA;    ? null &#xD;&#xA;    : new java.text.SimpleDateFormat(&quot;dd/MM/yyyy&quot;).parse(row2.Order_Date)">
+  <variables name="row2.Order_ID" value="null" talendType="id_Integer" nullable="true"/>
+  <variables name="row2.Employee_ID" value="null" talendType="id_Integer" nullable="true"/>
+  <variables name="row2.Customer_ID" value="null" talendType="id_Integer" nullable="true"/>
+  <variables name="row2.Order_Date" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Shipped_Date" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Shipper_ID" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Ship_Name" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Ship_Address" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Ship_City" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Ship_State_Province" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Ship_ZIP_Postal_Code" value="null" talendType="id_Integer" nullable="true"/>
+  <variables name="row2.Ship_Country_Region" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Shipping_Fee" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Taxes" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Payment_Type" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Paid_Date" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Notes" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Tax_Rate" value="null" talendType="id_Integer" nullable="true"/>
+  <variables name="row2.Tax_Status" value="null" talendType="id_String" nullable="true"/>
+  <variables name="row2.Status_ID" value="null" talendType="id_Integer" nullable="true"/>
+</expression:EMFExpression>

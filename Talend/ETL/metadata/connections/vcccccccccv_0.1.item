@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org/metadata/connection/2010" xmi:id="_Y3tWoL4aEfC3nJcyXT0Plg" name="vcccccccccv" id="_II0XcL4aEfC3nJcyXT0Plg" label="vcccccccccv" DatabaseType="Microsoft SQL Server" DriverClass="net.sourceforge.jtds.jdbc.Driver" URL="jdbc:jtds:sqlserver://192.168.56.1:56021/Northwind_DW;" dbVersionString="JTDS" Port="56021" Username="" Password="" ServerName="192.168.56.1" DatasourceName="" FileFieldName="" SID="Northwind_DW" SqlSynthax="" StringQuote="" NullChar="" DbmsId="id_MSSQL" ProductId="SQL_SERVER" AdditionalParams="" StandardSQL="true" SQLMode="false" UiSchema="">
+  <taggedValue xmi:id="_Y3t9sL4aEfC3nJcyXT0Plg" tag="Is Conn Need Reload" value="true"/>
+  <taggedValue xmi:id="_Y4DU4L4aEfC3nJcyXT0Plg" tag="package filter" value=""/>
+  <taggedValue xmi:id="_Y4HmUL4aEfC3nJcyXT0Plg" tag="Status" value=""/>
+  <taggedValue xmi:id="_Y4HmUb4aEfC3nJcyXT0Plg" tag="Version" value="0.1"/>
+  <taggedValue xmi:id="_Y4HmUr4aEfC3nJcyXT0Plg" tag="Purpose" value=""/>
+  <taggedValue xmi:id="_Y4HmU74aEfC3nJcyXT0Plg" tag="Description" value=""/>
+  <taggedValue xmi:id="_Y4HmVL4aEfC3nJcyXT0Plg" tag="Author" value=""/>
+  <taggedValue xmi:id="_Y4HmVb4aEfC3nJcyXT0Plg" tag="otherParameter"/>
+  <parameters xmi:id="_Y3t9sb4aEfC3nJcyXT0Plg" key="CONN_PARA_KEY_USERNAME" value=""/>
+  <parameters xmi:id="_Z1Yf0L4aEfC3nJcyXT0Plg" key="CONN_PARA_KEY_MAPRDB_TABLE_NS_MAPPING" value=""/>
+</TalendMetadata:DatabaseConnection>
