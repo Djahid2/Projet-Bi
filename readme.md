@@ -46,7 +46,8 @@ project-root/
 │   
 │
 ├── power bi/
-│  
+│
+├── python/ 
 │
 ├── Rapport/
 │   
