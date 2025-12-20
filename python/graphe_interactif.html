@@ -1,0 +1,321 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+
+        
+<center>
+<h1>Graphe Reseau : Top 5 Clients par Pays (Drag & Drop)</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1>Graphe Reseau : Top 5 Clients par Pays (Drag & Drop)</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#ff4444", "font": {"color": "black"}, "id": "Argentina", "label": "Argentina", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Argentina\u003c/b\u003e\u003cbr\u003eNombre de clients: 3"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Cactus Comidas para llevar", "label": "Cactus Comidas para llevar", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Cactus Comidas para llevar\u003c/b\u003e\u003cbr\u003ePays: Argentina\u003cbr\u003eCommandes: 41"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Oc\u00e9ano Atl\u00e1ntico Ltda.", "label": "Oc\u00e9ano Atl\u00e1ntico Ltda.", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Oc\u00e9ano Atl\u00e1ntico Ltda.\u003c/b\u003e\u003cbr\u003ePays: Argentina\u003cbr\u003eCommandes: 36"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Rancho grande", "label": "Rancho grande", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Rancho grande\u003c/b\u003e\u003cbr\u003ePays: Argentina\u003cbr\u003eCommandes: 25"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Austria", "label": "Austria", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Austria\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Ernst Handel", "label": "Ernst Handel", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Ernst Handel\u003c/b\u003e\u003cbr\u003ePays: Austria\u003cbr\u003eCommandes: 179"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Piccolo und mehr", "label": "Piccolo und mehr", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Piccolo und mehr\u003c/b\u003e\u003cbr\u003ePays: Austria\u003cbr\u003eCommandes: 72"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Belgium", "label": "Belgium", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Belgium\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Supr\u00eames d\u00e9lices", "label": "Supr\u00eames d\u00e9lices", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Supr\u00eames d\u00e9lices\u003c/b\u003e\u003cbr\u003ePays: Belgium\u003cbr\u003eCommandes: 76"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Maison Dewey", "label": "Maison Dewey", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Maison Dewey\u003c/b\u003e\u003cbr\u003ePays: Belgium\u003cbr\u003eCommandes: 48"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Brazil", "label": "Brazil", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Brazil\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Queen Cozinha", "label": "Queen Cozinha", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Queen Cozinha\u003c/b\u003e\u003cbr\u003ePays: Brazil\u003cbr\u003eCommandes: 90"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Hanari Carnes", "label": "Hanari Carnes", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Hanari Carnes\u003c/b\u003e\u003cbr\u003ePays: Brazil\u003cbr\u003eCommandes: 70"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Ricardo Adocicados", "label": "Ricardo Adocicados", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Ricardo Adocicados\u003c/b\u003e\u003cbr\u003ePays: Brazil\u003cbr\u003eCommandes: 60"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Wellington Importadora", "label": "Wellington Importadora", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Wellington Importadora\u003c/b\u003e\u003cbr\u003ePays: Brazil\u003cbr\u003eCommandes: 56"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Gourmet Lanchonetes", "label": "Gourmet Lanchonetes", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Gourmet Lanchonetes\u003c/b\u003e\u003cbr\u003ePays: Brazil\u003cbr\u003eCommandes: 53"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Canada", "label": "Canada", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Canada\u003c/b\u003e\u003cbr\u003eNombre de clients: 3"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Bottom-Dollar Markets", "label": "Bottom-Dollar Markets", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Bottom-Dollar Markets\u003c/b\u003e\u003cbr\u003ePays: Canada\u003cbr\u003eCommandes: 81"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "M\u00e8re Paillarde", "label": "M\u00e8re Paillarde", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: M\u00e8re Paillarde\u003c/b\u003e\u003cbr\u003ePays: Canada\u003cbr\u003eCommandes: 68"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Laughing Bacchus Wine Cellars", "label": "Laughing Bacchus Wine Cellars", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Laughing Bacchus Wine Cellars\u003c/b\u003e\u003cbr\u003ePays: Canada\u003cbr\u003eCommandes: 21"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Denmark", "label": "Denmark", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Denmark\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Simons bistro", "label": "Simons bistro", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Simons bistro\u003c/b\u003e\u003cbr\u003ePays: Denmark\u003cbr\u003eCommandes: 57"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Vaffeljernet", "label": "Vaffeljernet", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Vaffeljernet\u003c/b\u003e\u003cbr\u003ePays: Denmark\u003cbr\u003eCommandes: 56"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Finland", "label": "Finland", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Finland\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Wartian Herkku", "label": "Wartian Herkku", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Wartian Herkku\u003c/b\u003e\u003cbr\u003ePays: Finland\u003cbr\u003eCommandes: 90"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Wilman Kala", "label": "Wilman Kala", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Wilman Kala\u003c/b\u003e\u003cbr\u003ePays: Finland\u003cbr\u003eCommandes: 47"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "France", "label": "France", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: France\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Bon app\u0027", "label": "Bon app\u0027", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Bon app\u0027\u003c/b\u003e\u003cbr\u003ePays: France\u003cbr\u003eCommandes: 93"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "La maison d\u0027Asie", "label": "La maison d\u0027Asie", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: La maison d\u0027Asie\u003c/b\u003e\u003cbr\u003ePays: France\u003cbr\u003eCommandes: 90"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Blondesddsl p\u00e8re et fils", "label": "Blondesddsl p\u00e8re et fils", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Blondesddsl p\u00e8re et fils\u003c/b\u003e\u003cbr\u003ePays: France\u003cbr\u003eCommandes: 63"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Victuailles en stock", "label": "Victuailles en stock", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Victuailles en stock\u003c/b\u003e\u003cbr\u003ePays: France\u003cbr\u003eCommandes: 47"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Vins et alcools Chevalier", "label": "Vins et alcools Chevalier", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Vins et alcools Chevalier\u003c/b\u003e\u003cbr\u003ePays: France\u003cbr\u003eCommandes: 35"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Germany", "label": "Germany", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Germany\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "QUICK-Stop", "label": "QUICK-Stop", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: QUICK-Stop\u003c/b\u003e\u003cbr\u003ePays: Germany\u003cbr\u003eCommandes: 160"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Lehmanns Marktstand", "label": "Lehmanns Marktstand", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Lehmanns Marktstand\u003c/b\u003e\u003cbr\u003ePays: Germany\u003cbr\u003eCommandes: 96"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "K\u00f6niglich Essen", "label": "K\u00f6niglich Essen", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: K\u00f6niglich Essen\u003c/b\u003e\u003cbr\u003ePays: Germany\u003cbr\u003eCommandes: 79"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Frankenversand", "label": "Frankenversand", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Frankenversand\u003c/b\u003e\u003cbr\u003ePays: Germany\u003cbr\u003eCommandes: 66"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Die Wandernde Kuh", "label": "Die Wandernde Kuh", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Die Wandernde Kuh\u003c/b\u003e\u003cbr\u003ePays: Germany\u003cbr\u003eCommandes: 56"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Ireland", "label": "Ireland", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Ireland\u003c/b\u003e\u003cbr\u003eNombre de clients: 1"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Hungry Owl All-Night Grocers", "label": "Hungry Owl All-Night Grocers", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Hungry Owl All-Night Grocers\u003c/b\u003e\u003cbr\u003ePays: Ireland\u003cbr\u003eCommandes: 125"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Italy", "label": "Italy", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Italy\u003c/b\u003e\u003cbr\u003eNombre de clients: 3"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Reggiani Caseifici", "label": "Reggiani Caseifici", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Reggiani Caseifici\u003c/b\u003e\u003cbr\u003ePays: Italy\u003cbr\u003eCommandes: 74"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Magazzini Alimentari Riuniti", "label": "Magazzini Alimentari Riuniti", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Magazzini Alimentari Riuniti\u003c/b\u003e\u003cbr\u003ePays: Italy\u003cbr\u003eCommandes: 61"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Franchi S.p.A.", "label": "Franchi S.p.A.", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Franchi S.p.A.\u003c/b\u003e\u003cbr\u003ePays: Italy\u003cbr\u003eCommandes: 32"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Mexico", "label": "Mexico", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Mexico\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Tortuga Restaurante", "label": "Tortuga Restaurante", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Tortuga Restaurante\u003c/b\u003e\u003cbr\u003ePays: Mexico\u003cbr\u003eCommandes: 53"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Antonio Moreno Taquer\u00eda", "label": "Antonio Moreno Taquer\u00eda", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Antonio Moreno Taquer\u00eda\u003c/b\u003e\u003cbr\u003ePays: Mexico\u003cbr\u003eCommandes: 44"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Pericles Comidas cl\u00e1sicas", "label": "Pericles Comidas cl\u00e1sicas", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Pericles Comidas cl\u00e1sicas\u003c/b\u003e\u003cbr\u003ePays: Mexico\u003cbr\u003eCommandes: 43"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Ana Trujillo Emparedados y helados", "label": "Ana Trujillo Emparedados y helados", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Ana Trujillo Emparedados y helados\u003c/b\u003e\u003cbr\u003ePays: Mexico\u003cbr\u003eCommandes: 25"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Centro comercial Moctezuma", "label": "Centro comercial Moctezuma", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Centro comercial Moctezuma\u003c/b\u003e\u003cbr\u003ePays: Mexico\u003cbr\u003eCommandes: 4"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Norway", "label": "Norway", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Norway\u003c/b\u003e\u003cbr\u003eNombre de clients: 1"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Sant\u00e9 Gourmet", "label": "Sant\u00e9 Gourmet", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Sant\u00e9 Gourmet\u003c/b\u003e\u003cbr\u003ePays: Norway\u003cbr\u003eCommandes: 41"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Poland", "label": "Poland", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Poland\u003c/b\u003e\u003cbr\u003eNombre de clients: 1"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Wolski  Zajazd", "label": "Wolski  Zajazd", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Wolski  Zajazd\u003c/b\u003e\u003cbr\u003ePays: Poland\u003cbr\u003eCommandes: 33"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Portugal", "label": "Portugal", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Portugal\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Princesa Isabel Vinhos", "label": "Princesa Isabel Vinhos", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Princesa Isabel Vinhos\u003c/b\u003e\u003cbr\u003ePays: Portugal\u003cbr\u003eCommandes: 37"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Furia Bacalhau e Frutos do Mar", "label": "Furia Bacalhau e Frutos do Mar", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Furia Bacalhau e Frutos do Mar\u003c/b\u003e\u003cbr\u003ePays: Portugal\u003cbr\u003eCommandes: 36"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Spain", "label": "Spain", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Spain\u003c/b\u003e\u003cbr\u003eNombre de clients: 4"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Godos Cocina T\u00edpica", "label": "Godos Cocina T\u00edpica", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Godos Cocina T\u00edpica\u003c/b\u003e\u003cbr\u003ePays: Spain\u003cbr\u003eCommandes: 74"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Romero y tomillo", "label": "Romero y tomillo", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Romero y tomillo\u003c/b\u003e\u003cbr\u003ePays: Spain\u003cbr\u003eCommandes: 23"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Galer\u00eda del gastr\u00f3nomo", "label": "Galer\u00eda del gastr\u00f3nomo", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Galer\u00eda del gastr\u00f3nomo\u003c/b\u003e\u003cbr\u003ePays: Spain\u003cbr\u003eCommandes: 22"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "B\u00f3lido Comidas preparadas", "label": "B\u00f3lido Comidas preparadas", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: B\u00f3lido Comidas preparadas\u003c/b\u003e\u003cbr\u003ePays: Spain\u003cbr\u003eCommandes: 16"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Sweden", "label": "Sweden", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Sweden\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Folk och f\u00e4 HB", "label": "Folk och f\u00e4 HB", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Folk och f\u00e4 HB\u003c/b\u003e\u003cbr\u003ePays: Sweden\u003cbr\u003eCommandes: 117"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Berglunds snabbk\u00f6p", "label": "Berglunds snabbk\u00f6p", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Berglunds snabbk\u00f6p\u003c/b\u003e\u003cbr\u003ePays: Sweden\u003cbr\u003eCommandes: 96"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Switzerland", "label": "Switzerland", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Switzerland\u003c/b\u003e\u003cbr\u003eNombre de clients: 2"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Richter Supermarkt", "label": "Richter Supermarkt", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Richter Supermarkt\u003c/b\u003e\u003cbr\u003ePays: Switzerland\u003cbr\u003eCommandes: 64"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Chop-suey Chinese", "label": "Chop-suey Chinese", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Chop-suey Chinese\u003c/b\u003e\u003cbr\u003ePays: Switzerland\u003cbr\u003eCommandes: 47"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "UK", "label": "UK", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: UK\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Around the Horn", "label": "Around the Horn", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Around the Horn\u003c/b\u003e\u003cbr\u003ePays: UK\u003cbr\u003eCommandes: 62"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "B\u0027s Beverages", "label": "B\u0027s Beverages", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: B\u0027s Beverages\u003c/b\u003e\u003cbr\u003ePays: UK\u003cbr\u003eCommandes: 60"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Seven Seas Imports", "label": "Seven Seas Imports", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Seven Seas Imports\u003c/b\u003e\u003cbr\u003ePays: UK\u003cbr\u003eCommandes: 57"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Island Trading", "label": "Island Trading", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Island Trading\u003c/b\u003e\u003cbr\u003ePays: UK\u003cbr\u003eCommandes: 51"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Eastern Connection", "label": "Eastern Connection", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Eastern Connection\u003c/b\u003e\u003cbr\u003ePays: UK\u003cbr\u003eCommandes: 46"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "USA", "label": "USA", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: USA\u003c/b\u003e\u003cbr\u003eNombre de clients: 5"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Save-a-lot Markets", "label": "Save-a-lot Markets", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Save-a-lot Markets\u003c/b\u003e\u003cbr\u003ePays: USA\u003cbr\u003eCommandes: 185"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Rattlesnake Canyon Grocery", "label": "Rattlesnake Canyon Grocery", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Rattlesnake Canyon Grocery\u003c/b\u003e\u003cbr\u003ePays: USA\u003cbr\u003eCommandes: 91"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "White Clover Markets", "label": "White Clover Markets", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: White Clover Markets\u003c/b\u003e\u003cbr\u003ePays: USA\u003cbr\u003eCommandes: 82"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Great Lakes Food Market", "label": "Great Lakes Food Market", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Great Lakes Food Market\u003c/b\u003e\u003cbr\u003ePays: USA\u003cbr\u003eCommandes: 51"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "Old World Delicatessen", "label": "Old World Delicatessen", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: Old World Delicatessen\u003c/b\u003e\u003cbr\u003ePays: USA\u003cbr\u003eCommandes: 51"}, {"color": "#ff4444", "font": {"color": "black"}, "id": "Venezuela", "label": "Venezuela", "shape": "dot", "size": 30, "title": "\u003cb\u003ePays: Venezuela\u003c/b\u003e\u003cbr\u003eNombre de clients: 4"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "HILARION-Abastos", "label": "HILARION-Abastos", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: HILARION-Abastos\u003c/b\u003e\u003cbr\u003ePays: Venezuela\u003cbr\u003eCommandes: 106"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "LILA-Supermercado", "label": "LILA-Supermercado", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: LILA-Supermercado\u003c/b\u003e\u003cbr\u003ePays: Venezuela\u003cbr\u003eCommandes: 73"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "LINO-Delicateses", "label": "LINO-Delicateses", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: LINO-Delicateses\u003c/b\u003e\u003cbr\u003ePays: Venezuela\u003cbr\u003eCommandes: 63"}, {"color": "#90EE90", "font": {"color": "black"}, "id": "GROSELLA-Restaurante", "label": "GROSELLA-Restaurante", "shape": "dot", "size": 20, "title": "\u003cb\u003eClient: GROSELLA-Restaurante\u003c/b\u003e\u003cbr\u003ePays: Venezuela\u003cbr\u003eCommandes: 8"}]);
+                  edges = new vis.DataSet([{"color": "#888888", "from": "Argentina", "title": "Commandes: 41", "to": "Cactus Comidas para llevar", "value": 4.1}, {"color": "#888888", "from": "Argentina", "title": "Commandes: 36", "to": "Oc\u00e9ano Atl\u00e1ntico Ltda.", "value": 3.6}, {"color": "#888888", "from": "Argentina", "title": "Commandes: 25", "to": "Rancho grande", "value": 2.5}, {"color": "#888888", "from": "Austria", "title": "Commandes: 179", "to": "Ernst Handel", "value": 17.9}, {"color": "#888888", "from": "Austria", "title": "Commandes: 72", "to": "Piccolo und mehr", "value": 7.2}, {"color": "#888888", "from": "Belgium", "title": "Commandes: 76", "to": "Supr\u00eames d\u00e9lices", "value": 7.6}, {"color": "#888888", "from": "Belgium", "title": "Commandes: 48", "to": "Maison Dewey", "value": 4.8}, {"color": "#888888", "from": "Brazil", "title": "Commandes: 90", "to": "Queen Cozinha", "value": 9.0}, {"color": "#888888", "from": "Brazil", "title": "Commandes: 70", "to": "Hanari Carnes", "value": 7.0}, {"color": "#888888", "from": "Brazil", "title": "Commandes: 60", "to": "Ricardo Adocicados", "value": 6.0}, {"color": "#888888", "from": "Brazil", "title": "Commandes: 56", "to": "Wellington Importadora", "value": 5.6}, {"color": "#888888", "from": "Brazil", "title": "Commandes: 53", "to": "Gourmet Lanchonetes", "value": 5.3}, {"color": "#888888", "from": "Canada", "title": "Commandes: 81", "to": "Bottom-Dollar Markets", "value": 8.1}, {"color": "#888888", "from": "Canada", "title": "Commandes: 68", "to": "M\u00e8re Paillarde", "value": 6.8}, {"color": "#888888", "from": "Canada", "title": "Commandes: 21", "to": "Laughing Bacchus Wine Cellars", "value": 2.1}, {"color": "#888888", "from": "Denmark", "title": "Commandes: 57", "to": "Simons bistro", "value": 5.7}, {"color": "#888888", "from": "Denmark", "title": "Commandes: 56", "to": "Vaffeljernet", "value": 5.6}, {"color": "#888888", "from": "Finland", "title": "Commandes: 90", "to": "Wartian Herkku", "value": 9.0}, {"color": "#888888", "from": "Finland", "title": "Commandes: 47", "to": "Wilman Kala", "value": 4.7}, {"color": "#888888", "from": "France", "title": "Commandes: 93", "to": "Bon app\u0027", "value": 9.3}, {"color": "#888888", "from": "France", "title": "Commandes: 90", "to": "La maison d\u0027Asie", "value": 9.0}, {"color": "#888888", "from": "France", "title": "Commandes: 63", "to": "Blondesddsl p\u00e8re et fils", "value": 6.3}, {"color": "#888888", "from": "France", "title": "Commandes: 47", "to": "Victuailles en stock", "value": 4.7}, {"color": "#888888", "from": "France", "title": "Commandes: 35", "to": "Vins et alcools Chevalier", "value": 3.5}, {"color": "#888888", "from": "Germany", "title": "Commandes: 160", "to": "QUICK-Stop", "value": 16.0}, {"color": "#888888", "from": "Germany", "title": "Commandes: 96", "to": "Lehmanns Marktstand", "value": 9.6}, {"color": "#888888", "from": "Germany", "title": "Commandes: 79", "to": "K\u00f6niglich Essen", "value": 7.9}, {"color": "#888888", "from": "Germany", "title": "Commandes: 66", "to": "Frankenversand", "value": 6.6}, {"color": "#888888", "from": "Germany", "title": "Commandes: 56", "to": "Die Wandernde Kuh", "value": 5.6}, {"color": "#888888", "from": "Ireland", "title": "Commandes: 125", "to": "Hungry Owl All-Night Grocers", "value": 12.5}, {"color": "#888888", "from": "Italy", "title": "Commandes: 74", "to": "Reggiani Caseifici", "value": 7.4}, {"color": "#888888", "from": "Italy", "title": "Commandes: 61", "to": "Magazzini Alimentari Riuniti", "value": 6.1}, {"color": "#888888", "from": "Italy", "title": "Commandes: 32", "to": "Franchi S.p.A.", "value": 3.2}, {"color": "#888888", "from": "Mexico", "title": "Commandes: 53", "to": "Tortuga Restaurante", "value": 5.3}, {"color": "#888888", "from": "Mexico", "title": "Commandes: 44", "to": "Antonio Moreno Taquer\u00eda", "value": 4.4}, {"color": "#888888", "from": "Mexico", "title": "Commandes: 43", "to": "Pericles Comidas cl\u00e1sicas", "value": 4.3}, {"color": "#888888", "from": "Mexico", "title": "Commandes: 25", "to": "Ana Trujillo Emparedados y helados", "value": 2.5}, {"color": "#888888", "from": "Mexico", "title": "Commandes: 4", "to": "Centro comercial Moctezuma", "value": 0.4}, {"color": "#888888", "from": "Norway", "title": "Commandes: 41", "to": "Sant\u00e9 Gourmet", "value": 4.1}, {"color": "#888888", "from": "Poland", "title": "Commandes: 33", "to": "Wolski  Zajazd", "value": 3.3}, {"color": "#888888", "from": "Portugal", "title": "Commandes: 37", "to": "Princesa Isabel Vinhos", "value": 3.7}, {"color": "#888888", "from": "Portugal", "title": "Commandes: 36", "to": "Furia Bacalhau e Frutos do Mar", "value": 3.6}, {"color": "#888888", "from": "Spain", "title": "Commandes: 74", "to": "Godos Cocina T\u00edpica", "value": 7.4}, {"color": "#888888", "from": "Spain", "title": "Commandes: 23", "to": "Romero y tomillo", "value": 2.3}, {"color": "#888888", "from": "Spain", "title": "Commandes: 22", "to": "Galer\u00eda del gastr\u00f3nomo", "value": 2.2}, {"color": "#888888", "from": "Spain", "title": "Commandes: 16", "to": "B\u00f3lido Comidas preparadas", "value": 1.6}, {"color": "#888888", "from": "Sweden", "title": "Commandes: 117", "to": "Folk och f\u00e4 HB", "value": 11.7}, {"color": "#888888", "from": "Sweden", "title": "Commandes: 96", "to": "Berglunds snabbk\u00f6p", "value": 9.6}, {"color": "#888888", "from": "Switzerland", "title": "Commandes: 64", "to": "Richter Supermarkt", "value": 6.4}, {"color": "#888888", "from": "Switzerland", "title": "Commandes: 47", "to": "Chop-suey Chinese", "value": 4.7}, {"color": "#888888", "from": "UK", "title": "Commandes: 62", "to": "Around the Horn", "value": 6.2}, {"color": "#888888", "from": "UK", "title": "Commandes: 60", "to": "B\u0027s Beverages", "value": 6.0}, {"color": "#888888", "from": "UK", "title": "Commandes: 57", "to": "Seven Seas Imports", "value": 5.7}, {"color": "#888888", "from": "UK", "title": "Commandes: 51", "to": "Island Trading", "value": 5.1}, {"color": "#888888", "from": "UK", "title": "Commandes: 46", "to": "Eastern Connection", "value": 4.6}, {"color": "#888888", "from": "USA", "title": "Commandes: 185", "to": "Save-a-lot Markets", "value": 18.5}, {"color": "#888888", "from": "USA", "title": "Commandes: 91", "to": "Rattlesnake Canyon Grocery", "value": 9.1}, {"color": "#888888", "from": "USA", "title": "Commandes: 82", "to": "White Clover Markets", "value": 8.2}, {"color": "#888888", "from": "USA", "title": "Commandes: 51", "to": "Great Lakes Food Market", "value": 5.1}, {"color": "#888888", "from": "USA", "title": "Commandes: 51", "to": "Old World Delicatessen", "value": 5.1}, {"color": "#888888", "from": "Venezuela", "title": "Commandes: 106", "to": "HILARION-Abastos", "value": 10.6}, {"color": "#888888", "from": "Venezuela", "title": "Commandes: 73", "to": "LILA-Supermercado", "value": 7.3}, {"color": "#888888", "from": "Venezuela", "title": "Commandes: 63", "to": "LINO-Delicateses", "value": 6.3}, {"color": "#888888", "from": "Venezuela", "title": "Commandes: 8", "to": "GROSELLA-Restaurante", "value": 0.8}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 200, "springConstant": 0.08}, "maxVelocity": 50, "solver": "forceAtlas2Based", "timestep": 0.35, "stabilization": {"enabled": true, "iterations": 100}}, "interaction": {"dragNodes": true, "dragView": true, "zoomView": true, "hover": true, "navigationButtons": true, "keyboard": {"enabled": true}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,121 @@
+﻿id_client_prod,id_seqClient,City,CompanyName,Country,source_prod 
+1,92,Seattle,Company A,USA,Acess
+10,101,Chicago,Company J,USA,Acess
+11,102,Miami,Company K,USA,Acess
+12,103,Las Vegas,Company L,USA,Acess
+13,104,Memphis,Company M,USA,Acess
+14,105,Denver,Company N,USA,Acess
+15,106,Honolulu,Company O,USA,Acess
+16,107,San Francisco,Company P,USA,Acess
+17,108,Seattle,Company Q,USA,Acess
+18,109,Boston,Company R,USA,Acess
+19,110,Los Angelas,Company S,USA,Acess
+2,93,Boston,Company B,USA,Acess
+20,111,New York,Company T,USA,Acess
+21,112,Minneapolis,Company U,USA,Acess
+22,113,Milwaukee,Company V,USA,Acess
+23,114,Portland,Company W,USA,Acess
+24,115,Salt Lake City,Company X,USA,Acess
+25,116,Chicago,Company Y,USA,Acess
+26,117,Miami,Company Z,USA,Acess
+27,118,Las Vegas,Company AA,USA,Acess
+28,119,Memphis,Company BB,USA,Acess
+29,120,Denver,Company CC,USA,Acess
+3,94,Los Angelas,Company C,USA,Acess
+4,95,New York,Company D,USA,Acess
+5,96,Minneapolis,Company E,USA,Acess
+6,97,Milwaukee,Company F,USA,Acess
+7,98,Boise,Company G,USA,Acess
+8,99,Portland,Company H,USA,Acess
+9,100,Salt Lake City,Company I,USA,Acess
+ALFKI,1,Berlin,Alfreds Futterkiste,Germany,Sql_server
+ANATR,2,México D.F.,Ana Trujillo Emparedados y helados,Mexico,Sql_server
+ANTON,3,México D.F.,Antonio Moreno Taquería,Mexico,Sql_server
+AROUT,4,London,Around the Horn,UK,Sql_server
+BERGS,5,Luleå,Berglunds snabbköp,Sweden,Sql_server
+BLAUS,6,Mannheim,Blauer See Delikatessen,Germany,Sql_server
+BLONP,7,Strasbourg,Blondesddsl père et fils,France,Sql_server
+BOLID,8,Madrid,Bólido Comidas preparadas,Spain,Sql_server
+BONAP,9,Marseille,Bon app',France,Sql_server
+BOTTM,10,Tsawassen,Bottom-Dollar Markets,Canada,Sql_server
+BSBEV,11,London,B's Beverages,UK,Sql_server
+CACTU,12,Buenos Aires,Cactus Comidas para llevar,Argentina,Sql_server
+CENTC,13,México D.F.,Centro comercial Moctezuma,Mexico,Sql_server
+CHOPS,14,Bern,Chop-suey Chinese,Switzerland,Sql_server
+COMMI,15,Sao Paulo,Comércio Mineiro,Brazil,Sql_server
+CONSH,16,London,Consolidated Holdings,UK,Sql_server
+DRACD,17,Aachen,Drachenblut Delikatessen,Germany,Sql_server
+DUMON,18,Nantes,Du monde entier,France,Sql_server
+EASTC,19,London,Eastern Connection,UK,Sql_server
+ERNSH,20,Graz,Ernst Handel,Austria,Sql_server
+FAMIA,21,Sao Paulo,Familia Arquibaldo,Brazil,Sql_server
+FISSA,22,Madrid,FISSA Fabrica Inter. Salchichas S.A.,Spain,Sql_server
+FOLIG,23,Lille,Folies gourmandes,France,Sql_server
+FOLKO,24,Bräcke,Folk och fä HB,Sweden,Sql_server
+FRANK,25,München,Frankenversand,Germany,Sql_server
+FRANR,26,Nantes,France restauration,France,Sql_server
+FRANS,27,Torino,Franchi S.p.A.,Italy,Sql_server
+FURIB,28,Lisboa,Furia Bacalhau e Frutos do Mar,Portugal,Sql_server
+GALED,29,Barcelona,Galería del gastrónomo,Spain,Sql_server
+GODOS,30,Sevilla,Godos Cocina Típica,Spain,Sql_server
+GOURL,31,Campinas,Gourmet Lanchonetes,Brazil,Sql_server
+GREAL,32,Eugene,Great Lakes Food Market,USA,Sql_server
+GROSR,33,Caracas,GROSELLA-Restaurante,Venezuela,Sql_server
+HANAR,34,Rio de Janeiro,Hanari Carnes,Brazil,Sql_server
+HILAA,35,San Cristóbal,HILARION-Abastos,Venezuela,Sql_server
+HUNGC,36,Elgin,Hungry Coyote Import Store,USA,Sql_server
+HUNGO,37,Cork,Hungry Owl All-Night Grocers,Ireland,Sql_server
+ISLAT,38,Cowes,Island Trading,UK,Sql_server
+KOENE,39,Brandenburg,Königlich Essen,Germany,Sql_server
+LACOR,40,Versailles,La corne d'abondance,France,Sql_server
+LAMAI,41,Toulouse,La maison d'Asie,France,Sql_server
+LAUGB,42,Vancouver,Laughing Bacchus Wine Cellars,Canada,Sql_server
+LAZYK,43,Walla Walla,Lazy K Kountry Store,USA,Sql_server
+LEHMS,44,Frankfurt a.M.,Lehmanns Marktstand,Germany,Sql_server
+LETSS,45,San Francisco,Let's Stop N Shop,USA,Sql_server
+LILAS,46,Barquisimeto,LILA-Supermercado,Venezuela,Sql_server
+LINOD,47,I. de Margarita,LINO-Delicateses,Venezuela,Sql_server
+LONEP,48,Portland,Lonesome Pine Restaurant,USA,Sql_server
+MAGAA,49,Bergamo,Magazzini Alimentari Riuniti,Italy,Sql_server
+MAISD,50,Bruxelles,Maison Dewey,Belgium,Sql_server
+MEREP,51,Montréal,Mère Paillarde,Canada,Sql_server
+MORGK,52,Leipzig,Morgenstern Gesundkost,Germany,Sql_server
+NORTS,53,London,North/South,UK,Sql_server
+OCEAN,54,Buenos Aires,Océano Atlántico Ltda.,Argentina,Sql_server
+OLDWO,55,Anchorage,Old World Delicatessen,USA,Sql_server
+OTTIK,56,Köln,Ottilies Käseladen,Germany,Sql_server
+PARIS,57,Paris,Paris spécialités,France,Sql_server
+PERIC,58,México D.F.,Pericles Comidas clásicas,Mexico,Sql_server
+PICCO,59,Salzburg,Piccolo und mehr,Austria,Sql_server
+PRINI,60,Lisboa,Princesa Isabel Vinhos,Portugal,Sql_server
+QUEDE,61,Rio de Janeiro,Que Delícia,Brazil,Sql_server
+QUEEN,62,Sao Paulo,Queen Cozinha,Brazil,Sql_server
+QUICK,63,Cunewalde,QUICK-Stop,Germany,Sql_server
+RANCH,64,Buenos Aires,Rancho grande,Argentina,Sql_server
+RATTC,65,Albuquerque,Rattlesnake Canyon Grocery,USA,Sql_server
+REGGC,66,Reggio Emilia,Reggiani Caseifici,Italy,Sql_server
+RICAR,67,Rio de Janeiro,Ricardo Adocicados,Brazil,Sql_server
+RICSU,68,Genève,Richter Supermarkt,Switzerland,Sql_server
+ROMEY,69,Madrid,Romero y tomillo,Spain,Sql_server
+SANTG,70,Stavern,Santé Gourmet,Norway,Sql_server
+SAVEA,71,Boise,Save-a-lot Markets,USA,Sql_server
+SEVES,72,London,Seven Seas Imports,UK,Sql_server
+SIMOB,73,Kobenhavn,Simons bistro,Denmark,Sql_server
+SPECD,74,Paris,Spécialités du monde,France,Sql_server
+SPLIR,75,Lander,Split Rail Beer & Ale,USA,Sql_server
+SUPRD,76,Charleroi,Suprêmes délices,Belgium,Sql_server
+THEBI,77,Portland,The Big Cheese,USA,Sql_server
+THECR,78,Butte,The Cracker Box,USA,Sql_server
+TOMSP,79,Münster,Toms Spezialitäten,Germany,Sql_server
+TORTU,80,México D.F.,Tortuga Restaurante,Mexico,Sql_server
+TRADH,81,Sao Paulo,Tradição Hipermercados,Brazil,Sql_server
+TRAIH,82,Kirkland,Trail's Head Gourmet Provisioners,USA,Sql_server
+VAFFE,83,Århus,Vaffeljernet,Denmark,Sql_server
+VICTE,84,Lyon,Victuailles en stock,France,Sql_server
+VINET,85,Reims,Vins et alcools Chevalier,France,Sql_server
+WANDK,86,Stuttgart,Die Wandernde Kuh,Germany,Sql_server
+WARTH,87,Oulu,Wartian Herkku,Finland,Sql_server
+WELLI,88,Resende,Wellington Importadora,Brazil,Sql_server
+WHITC,89,Seattle,White Clover Markets,USA,Sql_server
+WILMK,90,Helsinki,Wilman Kala,Finland,Sql_server
+WOLZA,91,Warszawa,Wolski  Zajazd,Poland,Sql_server
