@@ -67,7 +67,7 @@ project-root/
 
 ### 5.1 Extraction
 - Connexion aux bases **Northwind SQL Server** et **Northwind Access**
-- Extraction des tables principales : Orders, Order Details, Customers, Products, Employees, Suppliers
+- Extraction des tables principales : Orders, Customers, Territorie, Employees,Region 
 
 ### 5.2 Transformation
 - Nettoyage des données (valeurs nulles, doublons)
